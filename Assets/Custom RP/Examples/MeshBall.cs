@@ -53,15 +53,17 @@ public class MeshBall : MonoBehaviour {
 
 			if (!lightProbeVolume) {
 				var positions = new Vector3[1023];
-				for (int i = 0; i < matrices.Length; i++) {
+                var occlusionProbes = new Vector4[1023];
+                for (int i = 0; i < matrices.Length; i++) {
 					positions[i] = matrices[i].GetColumn(3);
 				}
 				var lightProbes = new SphericalHarmonicsL2[1023];
 				LightProbes.CalculateInterpolatedLightAndOcclusionProbes(
-					positions, lightProbes, null
-				);
+					positions, lightProbes, occlusionProbes
+                );
 				block.CopySHCoefficientArraysFrom(lightProbes);
-			}
+                block.CopyProbeOcclusionArrayFrom(occlusionProbes);
+            }
         }
         Graphics.DrawMeshInstanced(
             mesh, 0, material, matrices, 1023, block,
