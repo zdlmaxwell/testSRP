@@ -1,4 +1,4 @@
-#ifndef CUSTOM_META_PASS_INCLUDED
+﻿#ifndef CUSTOM_META_PASS_INCLUDED
 #define CUSTOM_META_PASS_INCLUDED
 
 #include "../ShaderLibrary/Surface.hlsl"
@@ -13,7 +13,7 @@ float unity_MaxOutputValue;
 struct Attributes {
 	float3 positionOS : POSITION;
 	float2 baseUV : TEXCOORD0;
-    float2 lightMapUV : TEXCOORD1;
+	float2 lightMapUV : TEXCOORD1;
 };
 
 struct Varyings {
@@ -23,31 +23,34 @@ struct Varyings {
 
 Varyings MetaPassVertex (Attributes input) {
 	Varyings output;
-    input.positionOS.xy =
+	input.positionOS.xy =
 		input.lightMapUV * unity_LightmapST.xy + unity_LightmapST.zw;
 	input.positionOS.z = input.positionOS.z > 0.0 ? FLT_MIN : 0.0;
-    output.positionCS = TransformWorldToHClip(input.positionOS);
+	output.positionCS = TransformWorldToHClip(input.positionOS);
 	output.baseUV = TransformBaseUV(input.baseUV);
 	return output;
 }
 
 float4 MetaPassFragment (Varyings input) : SV_TARGET {
-	float4 base = GetBase(input.baseUV);
+	InputConfig config = GetInputConfig(input.baseUV);
+	float4 base = GetBase(config);
 	Surface surface;
 	ZERO_INITIALIZE(Surface, surface);
 	surface.color = base.rgb;
-	surface.metallic = GetMetallic(input.baseUV);
-	surface.smoothness = GetSmoothness(input.baseUV);
+	surface.metallic = GetMetallic(config);
+	surface.smoothness = GetSmoothness(config);
 	BRDF brdf = GetBRDF(surface);
 	float4 meta = 0.0;
-    if (unity_MetaFragmentControl.x) {
+	if (unity_MetaFragmentControl.x) {
 		meta = float4(brdf.diffuse, 1.0);
-        meta.rgb += brdf.specular * brdf.roughness * 0.5;
-        meta.rgb = min(
+		meta.rgb += brdf.specular * brdf.roughness * 0.5;
+		meta.rgb = min(
 			PositivePow(meta.rgb, unity_OneOverOutputBoost), unity_MaxOutputValue
 		);
-	} else if (unity_MetaFragmentControl.y) {
-		meta = float4(GetEmission(input.baseUV), 1.0);
+	}
+	else if (unity_MetaFragmentControl.y) {
+
+		meta = float4(GetEmission(config), 1.0);
 	}
 	return meta;
 }
