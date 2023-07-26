@@ -37,10 +37,14 @@ public partial class CameraRenderer {
 		
 		buffer.BeginSample(SampleName);
 		ExecuteBuffer();
-		lighting.Setup(context, cullingResults, shadowSettings, useLightsPerObject);
+		lighting.Setup(
+			context, cullingResults, shadowSettings, useLightsPerObject
+		);
 		buffer.EndSample(SampleName);
 		Setup();
-		DrawVisibleGeometry(useDynamicBatching, useGPUInstancing, useLightsPerObject);
+		DrawVisibleGeometry(
+			useDynamicBatching, useGPUInstancing, useLightsPerObject
+		);
 		DrawUnsupportedShaders();
 		DrawGizmos();
 		lighting.Cleanup();
@@ -80,11 +84,12 @@ public partial class CameraRenderer {
 		buffer.Clear();
 	}
 
-	void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing, bool useLightsPerObject) {
-        PerObjectData lightsPerObjectFlags = useLightsPerObject ?
-            PerObjectData.LightData | PerObjectData.LightIndices :
-            PerObjectData.None;
-        
+	void DrawVisibleGeometry (
+		bool useDynamicBatching, bool useGPUInstancing, bool useLightsPerObject
+	) {
+		PerObjectData lightsPerObjectFlags = useLightsPerObject ?
+			PerObjectData.LightData | PerObjectData.LightIndices :
+			PerObjectData.None;
 		var sortingSettings = new SortingSettings(camera) {
 			criteria = SortingCriteria.CommonOpaque
 		};
@@ -99,8 +104,8 @@ public partial class CameraRenderer {
 				PerObjectData.LightProbe | PerObjectData.OcclusionProbe |
 				PerObjectData.LightProbeProxyVolume |
 				PerObjectData.OcclusionProbeProxyVolume |
-                lightsPerObjectFlags
-        };
+				lightsPerObjectFlags
+		};
 		drawingSettings.SetShaderPassName(1, litShaderTagId);
 
 		var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
