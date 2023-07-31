@@ -39,4 +39,6 @@ float3 _WorldSpaceCameraPos;
 float4x4 unity_MatrixPreviousM;
 float4x4 unity_MatrixPreviousMI;
 float4x4 unity_MatrixInvV;
+
+float4 _ProjectionParams;
 #endif
