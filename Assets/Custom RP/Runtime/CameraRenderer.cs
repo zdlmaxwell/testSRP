@@ -30,7 +30,8 @@ public partial class CameraRenderer {
 	public void Render (
 		ScriptableRenderContext context, Camera camera, bool allowHDR,
 		bool useDynamicBatching, bool useGPUInstancing, bool useLightsPerObject,
-		ShadowSettings shadowSettings, PostFXSettings postFXSettings
+		ShadowSettings shadowSettings, PostFXSettings postFXSettings,
+		int colorLUTResolution
 	) {
 		this.context = context;
 		this.camera = camera;
@@ -47,7 +48,7 @@ public partial class CameraRenderer {
 		lighting.Setup(
 			context, cullingResults, shadowSettings, useLightsPerObject
 		);
-		postFXStack.Setup(context, camera, postFXSettings, useHDR);
+		postFXStack.Setup(context, camera, postFXSettings, useHDR, colorLUTResolution);
 		buffer.EndSample(SampleName);
 		Setup();
 		DrawVisibleGeometry(

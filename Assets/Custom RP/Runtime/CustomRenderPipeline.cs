@@ -13,12 +13,15 @@ public partial class CustomRenderPipeline : RenderPipeline {
 
 	PostFXSettings postFXSettings;
 
+	int colorLUTResolution;
+
 	public CustomRenderPipeline (
 		bool allowHDR,
 		bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatcher,
 		bool useLightsPerObject, ShadowSettings shadowSettings,
-		PostFXSettings postFXSettings
+		PostFXSettings postFXSettings, int colorLUTResolution
 	) {
+		this.colorLUTResolution = colorLUTResolution;
 		this.allowHDR = allowHDR;
 		this.postFXSettings = postFXSettings;
 		this.shadowSettings = shadowSettings;
@@ -30,14 +33,12 @@ public partial class CustomRenderPipeline : RenderPipeline {
 		InitializeForEditor();
 	}
 
-	protected override void Render (
-		ScriptableRenderContext context, Camera[] cameras
-	) {
+	protected override void Render (ScriptableRenderContext context, Camera[] cameras) {
 		foreach (Camera camera in cameras) {
 			renderer.Render(
 				context, camera, allowHDR,
 				useDynamicBatching, useGPUInstancing, useLightsPerObject,
-				shadowSettings, postFXSettings
+				shadowSettings, postFXSettings, colorLUTResolution
 			);
 		}
 	}
